@@ -229,7 +229,7 @@ h2 { font-size:17px; font-weight:700; }
     <div>
       <div class="aq">¿Qué antídoto(s) VUCA aplicarías?</div>
       <div class="ah">Puede haber más de una respuesta válida. <em>Justifiquen su elección.</em></div>
-      <textarea id="ta1" placeholder="Escriban aquí su razonamiento…"></textarea>
+      <textarea id="ta1" placeholder="Escriban aquí su razonamiento…" oninput="updateUI()"></textarea>
     </div>
   </div>
 
@@ -260,7 +260,7 @@ h2 { font-size:17px; font-weight:700; }
     <div>
       <div class="aq">¿Qué antídoto(s) VUCA aplicarías?</div>
       <div class="ah">Puede haber más de una respuesta válida. <em>Justifiquen su elección.</em></div>
-      <textarea id="ta2" placeholder="Escriban aquí su razonamiento…"></textarea>
+      <textarea id="ta2" placeholder="Escriban aquí su razonamiento…" oninput="updateUI()"></textarea>
     </div>
   </div>
 
@@ -291,7 +291,7 @@ h2 { font-size:17px; font-weight:700; }
     <div>
       <div class="aq">¿Qué antídoto(s) VUCA aplicarías?</div>
       <div class="ah">Puede haber más de una respuesta válida. <em>Consideren también el orden.</em></div>
-      <textarea id="ta3" placeholder="Escriban aquí su razonamiento…"></textarea>
+      <textarea id="ta3" placeholder="Escriban aquí su razonamiento…" oninput="updateUI()"></textarea>
     </div>
   </div>
 
@@ -322,7 +322,7 @@ h2 { font-size:17px; font-weight:700; }
     <div>
       <div class="aq">¿Qué antídoto(s) VUCA aplicarías?</div>
       <div class="ah">Puede haber más de una respuesta válida. <em>Justifiquen su elección.</em></div>
-      <textarea id="ta4" placeholder="Escriban aquí su razonamiento…"></textarea>
+      <textarea id="ta4" placeholder="Escriban aquí su razonamiento…" oninput="updateUI()"></textarea>
     </div>
   </div>
 
@@ -678,7 +678,11 @@ function updateUI() {
   if (cur === 0) {
     btnN.textContent = 'Comenzar →'; btnN.disabled = false;
   } else if (cur === 2 || cur === 5 || cur === 8 || cur === 11) {
-    btnN.textContent = 'Ver respuesta del modelo →'; btnN.disabled = false;
+    var taId = ['','','ta1','','','ta2','','','ta3','','','ta4'][cur];
+    var taEl = document.getElementById(taId);
+    var hasText = taEl && taEl.value.trim().split(/\s+/).filter(function(w){return w.length>0;}).length >= 1;
+    btnN.textContent = 'Ver respuesta del modelo →';
+    btnN.disabled = !hasText;
   } else if (cur === 3 || cur === 6 || cur === 9 || cur === 12) {
     btnN.textContent = 'Responder pregunta →'; btnN.disabled = false;
   } else if (MC_SCREENS.indexOf(cur) >= 0) {
