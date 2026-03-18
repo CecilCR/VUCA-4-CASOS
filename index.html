@@ -1,1 +1,791 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>El Lunes Negro de Fast-Delivery</title>
+<meta property="og:type" content="sitio-web">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #f4f5f7;
+  --sf:     #ffffff;
+  --s2:     #f0f1f4;
+  --bd:     #e2e4ea;
+  --bd2:    #c8ccd6;
+  --tx:     #18191f;
+  --mu:     #60647a;
+  --ac:     #c97a00;
+  --abg:    #fffbf0;
+  --abd:    #f5d080;
+  --gr:     #1a7a3c;
+  --gbg:    #f0faf4;
+  --gbd:    #7dcfa0;
+  --bl:     #1556b8;
+  --bbg:    #f0f5ff;
+  --bbd:    #93b4f0;
+  --pu:     #6b3bbf;
+  --pbg:    #f6f2ff;
+  --pbd:    #bba4e8;
+  --rd:     #dc2626;
+  --rbg:    #fef2f2;
+  --rbd:    #fca5a5;
+  --fn:     'DM Sans', sans-serif;
+  --mo:     'DM Mono', monospace;
+}
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+html,body { height:100%; font-family:var(--fn); background:var(--bg); color:var(--tx); font-size:16px; line-height:1.6; -webkit-text-size-adjust:100%; overflow:hidden; }
 
+/* confetti */
+#cc { position:fixed; inset:0; pointer-events:none; z-index:9999; overflow:hidden; }
+.cp { position:absolute; animation:cf linear forwards; }
+@keyframes cf { 0%{transform:translateY(-16px) rotate(0deg);opacity:1} 100%{transform:translateY(105vh) rotate(680deg);opacity:0} }
+
+/* shell */
+.app { display:flex; flex-direction:column; height:100vh; height:100dvh; max-width:520px; margin:0 auto; background:var(--sf); box-shadow:0 0 0 1px var(--bd); }
+
+/* top bar */
+.tb { flex-shrink:0; display:flex; align-items:center; gap:8px; padding:10px 14px; background:var(--sf); border-bottom:1px solid var(--bd); }
+.tb-lbl { font-size:11px; font-weight:600; font-family:var(--mo); color:var(--mu); white-space:nowrap; flex-shrink:0; min-width:0; overflow:hidden; text-overflow:ellipsis; max-width:180px; }
+.tb-trk { flex:1; height:5px; background:var(--s2); border-radius:3px; overflow:hidden; }
+.tb-fill { height:100%; background:linear-gradient(90deg,var(--ac),#e8a000); border-radius:3px; transition:width .4s ease; width:0%; }
+
+/* screens */
+.scr { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; display:none; flex-direction:column; padding:18px 16px 100px; gap:14px; }
+.scr.on { display:flex; }
+
+/* bottom nav */
+.bnav { flex-shrink:0; padding:10px 16px 14px; background:var(--sf); border-top:1px solid var(--bd); display:flex; gap:8px; }
+.btn { flex:1; padding:13px; border:none; border-radius:10px; font-family:var(--fn); font-size:15px; font-weight:700; cursor:pointer; transition:opacity .15s,transform .12s; }
+.btn:active { transform:scale(.97); opacity:.9; }
+.btn-p { background:var(--ac); color:#fff; }
+.btn-g { background:var(--s2); color:var(--mu); border:1px solid var(--bd); flex:0 0 auto; padding:13px 16px; font-size:14px; }
+
+/* badges */
+.bdg { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:700; font-family:var(--mo); padding:3px 9px; border-radius:20px; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; }
+.ba { background:var(--abg); border:1px solid var(--abd); color:var(--ac); }
+.bb { background:var(--bbg); border:1px solid var(--bbd); color:var(--bl); }
+.bg { background:var(--gbg); border:1px solid var(--gbd); color:var(--gr); }
+.bp { background:var(--pbg); border:1px solid var(--pbd); color:var(--pu); }
+
+/* num circle */
+.nc { width:28px; height:28px; border-radius:50%; font-size:12px; font-weight:700; font-family:var(--mo); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.nca { background:var(--abg); color:var(--ac); border:1px solid var(--abd); }
+.ncb { background:var(--bbg); color:var(--bl); border:1px solid var(--bbd); }
+.ncg { background:var(--gbg); color:var(--gr); border:1px solid var(--gbd); }
+
+/* blocks */
+.blk { border-radius:8px; padding:11px 13px; font-size:14px; line-height:1.65; border-left:3px solid; }
+.blk-lbl { font-size:10px; font-weight:700; font-family:var(--mo); letter-spacing:.06em; text-transform:uppercase; display:block; margin-bottom:4px; }
+.blk-a { background:var(--abg); border-color:var(--ac); } .blk-a .blk-lbl { color:var(--ac); }
+.blk-b { background:var(--bbg); border-color:var(--bl); } .blk-b .blk-lbl { color:var(--bl); }
+.blk-g { background:var(--gbg); border-color:var(--gr); } .blk-g .blk-lbl { color:var(--gr); }
+.blk-p { background:var(--pbg); border-color:var(--pu); } .blk-p .blk-lbl { color:var(--pu); }
+
+/* data grid */
+.dgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.dcard { background:var(--s2); border:1px solid var(--bd); border-radius:8px; padding:10px 8px; text-align:center; }
+.dl { font-size:9px; color:var(--mu); font-family:var(--mo); text-transform:uppercase; letter-spacing:.05em; margin-bottom:3px; }
+.dv { font-size:15px; font-weight:700; color:var(--ac); font-family:var(--mo); }
+.ds { font-size:10px; color:var(--mu); margin-top:2px; }
+
+/* role */
+.role { display:flex; align-items:flex-start; gap:8px; background:var(--bbg); border:1px solid var(--bbd); border-radius:8px; padding:10px 14px; font-size:13px; }
+.role strong { color:var(--bl); }
+
+/* instruc */
+.ins { background:var(--bbg); border:1px solid var(--bbd); border-left:3px solid var(--bl); border-radius:8px; padding:12px 14px; font-size:14px; }
+.ins-t { font-size:10px; font-weight:700; font-family:var(--mo); text-transform:uppercase; letter-spacing:.07em; color:var(--bl); margin-bottom:8px; }
+.ins ol { padding-left:18px; }
+.ins li { margin-bottom:5px; color:var(--mu); line-height:1.5; }
+.ins li strong { color:var(--tx); }
+
+/* section label */
+.sec { font-size:10px; font-weight:700; font-family:var(--mo); text-transform:uppercase; letter-spacing:.1em; color:var(--mu); display:flex; align-items:center; gap:8px; }
+.sec::after { content:''; flex:1; height:1px; background:var(--bd); }
+
+/* textarea */
+.aq { font-size:14px; font-weight:600; margin-bottom:3px; }
+.ah { font-size:13px; color:var(--mu); margin-bottom:8px; line-height:1.5; }
+.ah em { color:var(--ac); font-style:normal; font-weight:500; }
+textarea { width:100%; min-height:80px; background:var(--s2); border:1.5px solid var(--bd2); border-radius:8px; color:var(--tx); font-family:var(--fn); font-size:15px; padding:10px 12px; outline:none; resize:vertical; line-height:1.6; transition:border-color .2s; -webkit-appearance:none; }
+textarea:focus { border-color:var(--ac); background:var(--sf); }
+textarea::placeholder { color:#adb1c2; }
+
+/* reveal */
+.rev { border-radius:10px; overflow:hidden; border:1px solid var(--bd); }
+.rev-top { padding:12px 14px; background:var(--gbg); border-bottom:1px solid var(--gbd); }
+.rev-val { font-size:20px; font-weight:700; font-family:var(--mo); color:var(--gr); }
+.rev-also { font-size:12px; color:var(--mu); margin-top:4px; font-style:italic; }
+.rev-body { padding:12px 14px; font-size:14px; line-height:1.7; color:var(--mu); background:var(--sf); border-bottom:1px solid var(--bd); }
+.rev-body strong { color:var(--tx); }
+.rev-pl { padding:12px 14px; background:var(--pbg); }
+.rev-pl-t { font-size:10px; font-weight:700; font-family:var(--mo); text-transform:uppercase; letter-spacing:.07em; color:var(--pu); margin-bottom:5px; }
+.rev-pl-q { font-size:14px; font-weight:600; color:var(--tx); line-height:1.5; }
+
+/* quiz options */
+.q-hdr { display:flex; align-items:center; justify-content:space-between; }
+.q-lbl { font-size:10px; font-weight:700; font-family:var(--mo); text-transform:uppercase; letter-spacing:.08em; color:var(--mu); }
+.q-num { font-size:11px; font-family:var(--mo); color:var(--mu); }
+.q-txt { font-size:15px; font-weight:500; line-height:1.55; }
+.opts { display:flex; flex-direction:column; gap:8px; }
+.opt { display:flex; align-items:flex-start; gap:10px; background:var(--s2); border:1.5px solid var(--bd); border-radius:9px; padding:12px 13px; cursor:pointer; font-size:14px; line-height:1.5; transition:border-color .15s,background .15s; }
+.opt:active { background:#e8edf8; border-color:var(--bbd); }
+.opt input { accent-color:var(--ac); flex-shrink:0; width:17px; height:17px; margin-top:2px; cursor:pointer; }
+.opt label { cursor:pointer; flex:1; }
+.opt.ok  { border-color:var(--gr); background:var(--gbg); pointer-events:none; }
+.opt.bad { border-color:var(--rd); background:var(--rbg); pointer-events:none; }
+.opt.dim { pointer-events:none; opacity:.5; }
+
+/* feedback */
+.fb { border-radius:9px; padding:12px 14px; font-size:13px; line-height:1.7; }
+.fb-ok  { background:var(--gbg); border:1px solid var(--gbd); border-left:3px solid var(--gr); }
+.fb-bad { background:var(--rbg); border:1px solid var(--rbd); border-left:3px solid var(--rd); }
+.fb-tag { display:inline-block; font-size:10px; font-weight:700; font-family:var(--mo); text-transform:uppercase; letter-spacing:.06em; padding:2px 8px; border-radius:10px; margin-bottom:7px; }
+.ft-ok  { background:var(--gbg); color:var(--gr); border:1px solid var(--gbd); }
+.ft-bad { background:var(--rbg); color:var(--rd); border:1px solid var(--rbd); }
+.det { background:var(--pbg); border:1px solid var(--pbd); border-radius:9px; padding:12px 14px; }
+.det-t { font-size:10px; font-weight:700; font-family:var(--mo); text-transform:uppercase; letter-spacing:.06em; color:var(--pu); margin-bottom:5px; }
+.det-q { font-size:13px; color:var(--mu); line-height:1.55; }
+
+/* selected summary */
+.sel-sum { padding:9px 13px; background:var(--s2); border:1.5px solid var(--bd); border-radius:9px; font-size:13px; color:var(--mu); margin-bottom:2px; }
+.sel-sum-lbl { font-size:10px; font-weight:700; font-family:var(--mo); text-transform:uppercase; letter-spacing:.06em; color:var(--mu); display:block; margin-bottom:2px; }
+
+/* results */
+.sc-ring { display:flex; align-items:center; justify-content:center; width:100px; height:100px; border-radius:50%; border:3px solid var(--bd); font-size:28px; font-weight:700; font-family:var(--mo); color:var(--ac); margin:0 auto 16px; position:relative; }
+.sc-ring::before { content:''; position:absolute; inset:-3px; border-radius:50%; border:3px solid transparent; border-top-color:var(--ac); animation:spin 1.2s ease-out forwards; }
+@keyframes spin { from{transform:rotate(-90deg)} to{transform:rotate(270deg)} }
+.rl { font-size:18px; font-weight:700; text-align:center; margin-bottom:8px; }
+.rm { font-size:14px; color:var(--mu); text-align:center; line-height:1.7; margin-bottom:16px; }
+.lv0{color:var(--ac)} .lv1{color:var(--gr)} .lv2{color:var(--bl)} .lv3{color:var(--mu)}
+
+/* title */
+.ttl { font-size:clamp(1.3rem,5vw,1.65rem); font-weight:700; line-height:1.25; text-align:center; }
+.ttl span { color:var(--ac); }
+.sub { font-size:14px; color:var(--mu); text-align:center; line-height:1.6; }
+h2 { font-size:17px; font-weight:700; }
+
+@media(min-width:521px){
+  .app { border-radius:20px; margin:16px auto; height:calc(100vh - 32px); height:calc(100dvh - 32px); }
+}
+</style>
+</head>
+<body>
+<div id="cc"></div>
+<div class="app">
+
+  <!-- TOP BAR -->
+  <div class="tb">
+    <span class="tb-lbl" id="tbl">Inicio</span>
+    <div class="tb-trk"><div class="tb-fill" id="tbf"></div></div>
+  </div>
+
+  <!-- ══ S0: INTRO ══ -->
+  <div class="scr on" id="s0">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">
+      <span class="bdg ba">🌪️ Entorno VUCA</span>
+      <span class="bdg bb">👥 Trabajo en grupo</span>
+      <span class="bdg bg">📋 Instrumento formativo</span>
+    </div>
+    <p class="ttl">El <span>Lunes Negro</span><br>de Fast-Delivery</p>
+    <p class="sub">Gestión de relaciones y toma de decisiones bajo Volatilidad, Incertidumbre, Complejidad y Ambigüedad</p>
+    <div class="ins">
+      <div class="ins-t">📌 Instrucciones</div>
+      <ol>
+        <li><strong>Lean juntos</strong> el contexto y cada escenario.</li>
+        <li><strong>Discutan</strong> qué antídoto(s) VUCA aplicarían y por qué. <strong>No hay una única respuesta correcta.</strong></li>
+        <li><strong>Escriban su razonamiento</strong> antes de revelar la respuesta del modelo.</li>
+        <li>Después de revelar, <strong>respondan la pregunta de consolidación</strong> de cada escenario.</li>
+        <li>Conserven sus argumentos para el <strong>plenario</strong>.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ══ S1: CONTEXTO ══ -->
+  <div class="scr" id="s1">
+    <div class="sec">📋 Contexto organizacional</div>
+    <p style="font-size:14px;color:var(--mu);line-height:1.7">Eres el <strong style="color:var(--tx)">Gerente de Operaciones de Fast-Delivery</strong>, una startup peruana de última milla con el 18% del mercado de Lima y 280 repartidores. Su ventaja competitiva es un sistema de inteligencia artificial que prometía entregas en menos de 30 minutos. Hoy, el entorno VUCA ha golpeado simultáneamente en tres frentes.</p>
+    <div class="dgrid">
+      <div class="dcard"><div class="dl">Mercado</div><div class="dv">18%</div><div class="ds">Lima</div></div>
+      <div class="dcard"><div class="dl">Repartidores</div><div class="dv">280</div><div class="ds">activos</div></div>
+      <div class="dcard"><div class="dl">Impacto legal</div><div class="dv">S/2.8M</div><div class="ds">extra/mes</div></div>
+      <div class="dcard"><div class="dl">Competencia</div><div class="dv">S/3.50</div><div class="ds">vs S/10</div></div>
+      <div class="dcard"><div class="dl">Satisfacción</div><div class="dv">68→22</div><div class="ds">en 2h</div></div>
+      <div class="dcard"><div class="dl">Rating App</div><div class="dv">3.2★</div><div class="ds">desde 4.8</div></div>
+    </div>
+    <div class="role"><span style="font-size:18px;flex-shrink:0">🎯</span><span>Tu rol: <strong>Gerente de Operaciones</strong> — Lunes, 7:30 AM</span></div>
+    <div class="blk blk-a"><span class="blk-lbl">Recuerda</span>Los 4 antídotos del modelo VUCA: <strong>Visión, Entendimiento, Claridad y Agilidad</strong>. Pueden combinarse según la situación.</div>
+  </div>
+
+  <!-- ══ S2: ESC 1 PREGUNTA ABIERTA ══ -->
+  <div class="scr" id="s2">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="nc nca">1</div>
+      <h2>El vacío legal</h2>
+    </div>
+    <div class="blk blk-a"><span class="blk-lbl">El Hecho</span>El Ministerio de Trabajo publicó un decreto sorpresa: en 48 horas, todos los repartidores deben pasar a planilla con beneficios completos.</div>
+    <div class="blk blk-b"><span class="blk-lbl">El Contexto</span>Tus repartidores son independientes. Incorporarlos a planilla aumentaría los costos en S/2.8M al mes. El decreto es ambiguo y no explica cómo se fiscalizará a las aplicaciones digitales.</div>
+    <div>
+      <div class="aq">¿Qué antídoto(s) VUCA aplicarías?</div>
+      <div class="ah">Puede haber más de una respuesta válida. <em>Justifiquen su elección.</em></div>
+      <textarea id="ta1" placeholder="Escriban aquí su razonamiento…"></textarea>
+    </div>
+  </div>
+
+  <!-- ══ S3: ESC 1 MODELO ══ -->
+  <div class="scr" id="s3">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="nc nca">1</div>
+      <h2>El vacío legal</h2>
+    </div>
+    <div class="rev">
+      <div class="rev-top"><div class="rev-val">ENTENDIMIENTO</div><div class="rev-also">También válido: Claridad</div></div>
+      <div class="rev-body">Ante la falta de información, primero se reduce la niebla: equipo legal, gremios, clarificaciones oficiales. El gerente no puede transformar el modelo de negocio en 48 horas sin riesgo de quiebra. Decidir sin datos confiables puede generar costos irreversibles. La Claridad también es válida en paralelo: comunicar al equipo con precisión qué se sabe y qué está por definirse, para evitar rumores y desorientación.</div>
+      <div class="rev-pl"><div class="rev-pl-t">🟣 Para el plenario</div><div class="rev-pl-q">¿Cuándo el Entendimiento deja paso a la Agilidad aunque no haya información completa?</div></div>
+    </div>
+  </div>
+
+  <!-- ══ S4: ESC 1 PREGUNTA MC ══ -->
+  <div class="scr" id="s4" data-qi="0"></div>
+
+  <!-- ══ S5: ESC 2 PREGUNTA ABIERTA ══ -->
+  <div class="scr" id="s5">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="nc ncb">2</div>
+      <h2>La guerra de los drones</h2>
+    </div>
+    <div class="blk blk-a"><span class="blk-lbl">El Hecho</span>TechLogix lanzó drones en Lima que entregan por S/3.50 (tu costo es S/10.00).</div>
+    <div class="blk blk-b"><span class="blk-lbl">El Contexto</span>Tus tres clientes más grandes piden rebaja inmediata o se van. El valor estimado de tu empresa cayó 20% en tres horas.</div>
+    <div>
+      <div class="aq">¿Qué antídoto(s) VUCA aplicarías?</div>
+      <div class="ah">Puede haber más de una respuesta válida. <em>Justifiquen su elección.</em></div>
+      <textarea id="ta2" placeholder="Escriban aquí su razonamiento…"></textarea>
+    </div>
+  </div>
+
+  <!-- ══ S6: ESC 2 MODELO ══ -->
+  <div class="scr" id="s6">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="nc ncb">2</div>
+      <h2>La guerra de los drones</h2>
+    </div>
+    <div class="rev">
+      <div class="rev-top"><div class="rev-val">VISIÓN</div><div class="rev-also">También válido: Entendimiento</div></div>
+      <div class="rev-body">Competir en precio contra drones es inviable a corto plazo: su costo es S/3.50 frente a S/10 de Fast-Delivery. La respuesta no es bajar precios sino reafirmar la Visión: ¿en qué es única esta empresa? Pedidos pesados, frágiles, entregas en edificios altos, horarios extendidos — servicios que los drones aún no pueden cubrir. Esa propuesta diferenciada retiene a los clientes por valor, no por precio.</div>
+      <div class="rev-pl"><div class="rev-pl-t">🟣 Para el plenario</div><div class="rev-pl-q">¿En qué momento la Visión se convierte en negación de la realidad?</div></div>
+    </div>
+  </div>
+
+  <!-- ══ S7: ESC 2 PREGUNTA MC ══ -->
+  <div class="scr" id="s7" data-qi="1"></div>
+
+  <!-- ══ S8: ESC 3 PREGUNTA ABIERTA ══ -->
+  <div class="scr" id="s8">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="nc ncg">3</div>
+      <h2>El choque de sistemas</h2>
+    </div>
+    <div class="blk blk-a"><span class="blk-lbl">El Hecho</span>La Municipalidad activó un "Tráfico Inteligente" que bloquea rutas. El sistema de Fast-Delivery no lo reconoce y envía repartidores por calles cerradas.</div>
+    <div class="blk blk-b"><span class="blk-lbl">El Contexto</span>Retrasos de 40 min. Satisfacción: 68→22 puntos. 340 reclamos sin responder. Rating: 4.8→3.2 estrellas. Cada problema genera el siguiente.</div>
+    <div>
+      <div class="aq">¿Qué antídoto(s) VUCA aplicarías?</div>
+      <div class="ah">Puede haber más de una respuesta válida. <em>Consideren también el orden.</em></div>
+      <textarea id="ta3" placeholder="Escriban aquí su razonamiento…"></textarea>
+    </div>
+  </div>
+
+  <!-- ══ S9: ESC 3 MODELO ══ -->
+  <div class="scr" id="s9">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="nc ncg">3</div>
+      <h2>El choque de sistemas</h2>
+    </div>
+    <div class="rev">
+      <div class="rev-top"><div class="rev-val">AGILIDAD</div><div class="rev-also">También válido: Entendimiento (después de controlar la crisis)</div></div>
+      <div class="rev-body">Cuando el sistema falla en cascada — retrasos de 40 minutos, satisfacción de 68 a 22, 340 reclamos sin responder — cada minuto sin actuar destruye más reputación. La Agilidad no significa actuar sin pensar: significa reconocer que el costo de esperar supera al costo de una solución imperfecta. El gerente activa un plan de contingencia: rutas por mapas convencionales y compensaciones automáticas. El análisis técnico del fallo viene después, una vez estabilizada la relación con el cliente.</div>
+      <div class="rev-pl"><div class="rev-pl-t">🟣 Para el plenario</div><div class="rev-pl-q">¿Cuándo la Agilidad sin Entendimiento se convierte en un parche permanente?</div></div>
+    </div>
+  </div>
+
+  <!-- ══ S10: ESC 3 PREGUNTA MC ══ -->
+  <div class="scr" id="s10" data-qi="2"></div>
+
+  <!-- ══ S11: ESC 4 PREGUNTA ABIERTA ══ -->
+  <div class="scr" id="s11">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="nc" style="background:var(--pbg);color:var(--pu);border:1px solid var(--pbd);">4</div>
+      <h2>La señal que nadie entiende</h2>
+    </div>
+    <div class="blk blk-a"><span class="blk-lbl">El Hecho</span>El Ministerio de Transportes acaba de publicar un comunicado anunciando "nuevas regulaciones para plataformas digitales de reparto". El texto es tan general que nadie en la empresa sabe si aplica a Fast-Delivery, si entrará en vigor esta semana o en seis meses, ni qué cambios operativos exigiría.</div>
+    <div class="blk blk-b"><span class="blk-lbl">El Contexto</span>El área legal dice que podría afectar los contratos con clientes. Operaciones cree que solo aplica a empresas con más de 500 repartidores. Finanzas ya está calculando provisiones por posibles multas. Los tres equipos están tomando decisiones distintas sobre el mismo evento, sin coordinación, porque cada uno le da un significado diferente al comunicado.</div>
+    <div>
+      <div class="aq">¿Qué antídoto(s) VUCA aplicarías?</div>
+      <div class="ah">Puede haber más de una respuesta válida. <em>Justifiquen su elección.</em></div>
+      <textarea id="ta4" placeholder="Escriban aquí su razonamiento…"></textarea>
+    </div>
+  </div>
+
+  <!-- ══ S12: ESC 4 MODELO ══ -->
+  <div class="scr" id="s12">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="nc" style="background:var(--pbg);color:var(--pu);border:1px solid var(--pbd);">4</div>
+      <h2>La señal que nadie entiende</h2>
+    </div>
+    <div class="rev">
+      <div class="rev-top"><div class="rev-val" style="color:var(--pu)">ENFOQUE COLABORATIVO</div><div class="rev-also">Antídoto de la Ambigüedad — También válido: Entendimiento</div></div>
+      <div class="rev-body">La Ambigüedad surge cuando no existe una relación clara entre causa y efecto: el mismo evento recibe interpretaciones contradictorias. El antídoto no es decidir rápido ni buscar más datos — es construir un significado compartido a través de la colaboración. El gerente reúne a legal, operaciones y finanzas para construir una interpretación común del comunicado antes de que cada área actúe por separado. Sin ese significado compartido, la empresa reacciona de tres formas distintas ante el mismo estímulo, multiplicando el riesgo.</div>
+      <div class="rev-pl"><div class="rev-pl-t">🟣 Para el plenario</div><div class="rev-pl-q">¿En qué situaciones el enfoque colaborativo puede ser tan lento que el costo de la demora supera al costo de la ambigüedad?</div></div>
+    </div>
+  </div>
+
+  <!-- ══ S13: ESC 4 MC ══ -->
+  <div class="scr" id="s13" data-qi="3"></div>
+
+  <!-- ══ S14: PREGUNTA INTEGRADORA MC ══ -->
+  <div class="scr" id="s14" data-qi="4"></div>
+
+  <!-- ══ S12: RESULTADOS ══ -->
+  <div class="scr" id="s15">
+
+    <!-- Bloque 1: Escenarios (score /3) -->
+    <div class="sec">📊 Consolidación por escenarios</div>
+    <div class="sc-ring" id="sc">0/4</div>
+    <div class="rl" id="rl"></div>
+    <p class="rm" id="rm"></p>
+
+    <!-- Bloque 2: Integradora (resultado separado) -->
+    <div class="sec">🔗 Pregunta integradora</div>
+    <div id="int-result" style="border-radius:10px;overflow:hidden;border:1px solid var(--bd);">
+      <div id="int-top" style="padding:12px 14px;background:var(--s2);border-bottom:1px solid var(--bd);">
+        <div style="font-size:10px;font-weight:700;font-family:var(--mo);text-transform:uppercase;letter-spacing:.07em;color:var(--mu);margin-bottom:3px">Antídoto: confusión de roles post-crisis</div>
+        <div id="int-val" style="font-size:16px;font-weight:700;font-family:var(--mo);color:var(--mu)">Sin responder</div>
+      </div>
+      <div id="int-body" style="padding:11px 14px;font-size:13px;color:var(--mu);line-height:1.65;background:var(--sf)">
+        Responde la pregunta integradora para ver el resultado aquí.
+      </div>
+    </div>
+
+    <!-- Temas plenario -->
+    <div class="blk blk-p">
+      <span class="blk-lbl">🟣 Temas para el plenario</span>
+      <div style="margin-top:4px;font-size:13px;color:var(--mu);line-height:1.9">
+        • ¿Cuándo el Entendimiento deja paso a la Agilidad?<br>
+        • ¿La Visión puede convertirse en negación de la realidad?<br>
+        • ¿Cuándo la Agilidad sin Entendimiento agrava el problema?<br>
+        • ¿Puede la Claridad eliminar la capacidad de adaptación del equipo?
+      </div>
+    </div>
+    <button class="btn btn-p" id="btn-retry" style="margin-top:4px">🔄 Reintentar</button>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bnav">
+    <button class="btn btn-g" id="btn-back" style="display:none">← Atrás</button>
+    <button class="btn btn-p" id="btn-next">Comenzar →</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// QUIZ DATA — 4 MC questions
+// ═══════════════════════════════════════════
+const QD = [
+  // Q0 — after Escenario 1 (Incertidumbre)
+  {
+    lbl: 'Consolidación — Escenario 1',
+    text: 'El Ministerio publica la ley sin detalles técnicos. ¿Qué debe priorizar el gerente antes de tomar decisiones que comprometan S/2.8M mensuales?',
+    opts: [
+      { id:'a', t:'Cambiar todos los contratos a planilla en menos de 24 horas para anticiparse.' },
+      { id:'b', t:'Emitir un comunicado asegurando que la ley no afectará los costos.' },
+      { id:'c', t:'Consultar con expertos legales y gremios para clarificar el alcance real de la norma.' },
+      { id:'d', t:'Aceptar que las multas son inevitables y reservar capital para absorberlas.' }
+    ],
+    correct: 'c',
+    ok: 'El Entendimiento es el antídoto de la Incertidumbre. Ante la falta de información confiable, el primer paso es reducir la niebla: expertos legales, gremios, clarificaciones oficiales. Actuar sin datos puede generar costos irreversibles. La incertidumbre no se resuelve actuando rápido — se resuelve buscando información dirigida antes de comprometer recursos.',
+    no: 'El modelo señala (c): ante la falta de información, primero se busca. Cambiar contratos en 24 horas sin analizar (a) puede quebrar la empresa innecesariamente. Comunicar sin fundamento (b) genera falsas expectativas. Aceptar multas sin investigar (d) es rendirse antes de luchar. El Entendimiento reduce la niebla y permite decisiones informadas.',
+    det: '¿Hasta cuándo puede el gerente buscar información antes de que la demora misma se convierta en un riesgo mayor que la ley?'
+  },
+  // Q1 — after Escenario 2 (Volatilidad)
+  {
+    lbl: 'Consolidación — Escenario 2',
+    text: 'TechLogix lanza drones a S/3.50 y tus clientes más grandes amenazan con irse. ¿Cuál es la respuesta más adecuada ante este cambio repentino?',
+    opts: [
+      { id:'a', t:'Liquidar activos para bajar el precio y competir con los drones.' },
+      { id:'b', t:'Reafirmar la propuesta de valor diferenciada y comunicarla a los clientes.' },
+      { id:'c', t:'Copiar la tecnología de drones para igualar al competidor.' },
+      { id:'d', t:'Esperar a que la novedad pase sin tomar medidas.' }
+    ],
+    correct: 'b',
+    ok: 'La Visión es el antídoto de la Volatilidad. Cuando el entorno cambia de forma repentina, el riesgo es reaccionar con pánico. La Visión lo evita: el gerente reafirma en qué es única la empresa — pedidos pesados, frágiles, edificios altos — y comunica con claridad por qué esa propuesta sigue siendo valiosa aunque los drones costen menos. La diferenciación, no el precio, es la ventaja sostenible.',
+    no: 'El modelo señala (b): la Visión da dirección estable ante el cambio repentino. Liquidar activos (a) es una reacción de pánico que destruye valor. Copiar drones (c) es inviable a corto plazo y abandona la ventaja competitiva. Esperar sin actuar (d) acumula incertidumbre y permite que los clientes se vayan. ¿Cómo defenderías tu elección en el plenario?',
+    det: '¿Cómo se comunica una Visión a clientes que ya evalúan al competidor sin que suene a evasión de la crisis?'
+  },
+  // Q2 — after Escenario 3 (Complejidad)
+  {
+    lbl: 'Consolidación — Escenario 3',
+    text: 'Con el índice de satisfacción de 68 a 22 y 340 reclamos sin responder, el sistema de ruteo sigue fallando. En este momento crítico, ¿cuál es la acción más adecuada para el gerente?',
+    opts: [
+      { id:'a', t:'Activar de inmediato rutas alternativas y compensaciones para los clientes afectados, aunque no sea la solución definitiva.' },
+      { id:'b', t:'Convocar al equipo técnico para analizar en profundidad el conflicto entre sistemas antes de tomar cualquier medida.' },
+      { id:'c', t:'Comunicar a los clientes que el problema está siendo investigado y que recibirán una solución en 24 horas.' },
+      { id:'d', t:'Escalar el problema al gerente general y esperar su autorización antes de activar cualquier plan de contingencia.' }
+    ],
+    correct: 'a',
+    ok: 'La Agilidad es el antídoto de la Complejidad. Cuando múltiples variables interconectadas generan daño en cascada, el costo de demorar supera al costo de una solución imperfecta. Activar rutas alternativas y compensaciones inmediatas detiene la hemorragia de clientes aunque no resuelva el fallo técnico de fondo. La Agilidad no reemplaza al análisis técnico: lo posterga al momento en que la crisis esté controlada.',
+    no: 'El modelo señala (a): la Agilidad prioriza la acción inmediata cuando el daño se acumula por minuto. Esperar el análisis técnico completo (b) deja 340 reclamos sin respuesta mientras el rating cae. Prometer solución en 24h (c) genera expectativas sin acción concreta ahora. Escalar y esperar autorización (d) añade demora cuando el gerente de operaciones ya puede actuar.',
+    det: '¿En qué momento el gerente debe dejar de ser ágil y empezar a analizar el fallo de fondo? ¿Qué señal concreta lo indicaría?'
+  },
+  // Q3 — after Escenario 4 (Ambigüedad)
+  {
+    lbl: 'Consolidación — Escenario 4',
+    text: 'Legal, Operaciones y Finanzas interpretan el comunicado del Ministerio de formas distintas y ya están tomando decisiones separadas. ¿Cuál es la respuesta más adecuada ante esta situación de Ambigüedad?',
+    opts: [
+      { id:'a', t:'Esperar que el Ministerio publique una aclaración oficial antes de tomar cualquier decisión interna.' },
+      { id:'b', t:'Reunir a las tres áreas para construir una interpretación común del comunicado antes de actuar por separado.' },
+      { id:'c', t:'Delegar en el área legal la interpretación definitiva y pedir a las demás áreas que la acaten.' },
+      { id:'d', t:'Actuar con Agilidad: implementar cambios operativos preventivos antes de que la regulación entre en vigor.' }
+    ],
+    correct: 'b',
+    ok: 'El antídoto de la Ambigüedad es el enfoque colaborativo: construir un significado compartido antes de actuar. Cuando el mismo evento recibe interpretaciones contradictorias, cada área actúa sobre una realidad diferente, multiplicando el riesgo. Reunir a legal, operaciones y finanzas para acordar una lectura común del comunicado alinea los esfuerzos y evita que la empresa reaccione de tres formas distintas ante el mismo estímulo.',
+    no: 'El modelo señala (b): la Ambigüedad se enfrenta con colaboración para construir significado compartido. Esperar (a) paraliza mientras la empresa sigue operando con interpretaciones distintas. Delegar solo en legal (c) impone una lectura sin considerar el impacto operativo y financiero. Actuar con Agilidad (d) es el antídoto de la Complejidad, no de la Ambigüedad — aquí el problema no es la velocidad sino la falta de interpretación común.',
+    det: '¿En qué situaciones el enfoque colaborativo puede ser tan lento que el costo de la demora supera al costo de la ambigüedad?'
+  },
+  // Q4 — Integradora
+  {
+    lbl: 'Pregunta integradora',
+    text: 'Fast-Delivery enfrenta simultáneamente: una ley laboral ambigua (Escenario 1), competencia disruptiva (Escenario 2) y un comunicado ministerial que tres áreas interpretan de forma diferente (Escenario 4). El directorio pregunta: ¿cuál de estos tres problemas debe atender primero el Gerente General? ¿Qué criterio usarías para priorizarlos?',
+    opts: [
+      { id:'a', t:'La ley laboral ambigua: es urgente porque S/2.8M mensuales están en juego y el plazo es de 48 horas.' },
+      { id:'b', t:'La competencia de drones: es urgente porque los clientes más grandes ya enviaron correos de alerta.' },
+      { id:'c', t:'El comunicado ministerial: es urgente porque tres áreas ya están actuando sobre interpretaciones distintas.' },
+      { id:'d', t:'Los tres tienen la misma urgencia y deben atenderse en paralelo con equipos diferentes.' }
+    ],
+    correct: 'd',
+    ok: 'La respuesta gerencial en entornos VUCA con múltiples frentes simultáneos es la atención paralela: asignar equipos y antídotos distintos a cada dimensión al mismo tiempo. El modelo no establece una jerarquía fija entre Volatilidad, Incertidumbre y Ambigüedad — los tres frentes tienen consecuencias inmediatas. La competencia clave del gerente VUCA es precisamente no serializar lo que no puede serializarse: gestionar Entendimiento, Visión y Enfoque colaborativo en simultáneo.',
+    no: 'El modelo señala (d): en entornos VUCA los múltiples frentes rara vez pueden atenderse en secuencia. Priorizar solo la ley (a) ignora que los clientes ya amenazan con irse. Priorizar solo los drones (b) deja la desalineación interna agravándose. Priorizar solo el comunicado (c) deja el plazo legal sin atender. La competencia gerencial en VUCA es precisamente asignar antídotos distintos a problemas simultáneos.',
+    det: '¿Cómo decide un gerente cuántos frentes puede atender en paralelo sin perder efectividad en ninguno?'
+  }
+];
+
+// ═══════════════════════════════════════════
+// SCREEN MAP
+// s0=intro s1=ctx
+// s2=esc1open s3=esc1reveal s4=esc1mc
+// s5=esc2open s6=esc2reveal s7=esc2mc
+// s8=esc3open s9=esc3reveal s10=esc3mc
+// s11=integradora s12=results
+// Total: 13 screens (0-12)
+// ═══════════════════════════════════════════
+const TOTAL  = 16;
+const FINAL  = 15;
+const MC_SCREENS = [4, 7, 10, 13, 14]; // screens that have MC questions
+const MC_QI  = { 4:0, 7:1, 10:2, 13:3, 14:4 }; // screen → question index
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let cur = 0;
+let score = 0;
+const ans = [null, null, null, null, null]; // one per MC question
+
+// ═══════════════════════════════════════════
+// BUILD MC SCREENS
+// ═══════════════════════════════════════════
+function buildMC() {
+  MC_SCREENS.forEach(function(sid) {
+    const qi = MC_QI[sid];
+    const q  = QD[qi];
+    const scr = document.getElementById('s' + sid);
+    if (!scr) return;
+    scr.innerHTML = ''; // clear any previous content
+
+    // Header
+    const hdr = document.createElement('div');
+    hdr.style.cssText = 'display:flex;align-items:center;justify-content:space-between;';
+    hdr.innerHTML =
+      '<span class="q-lbl">' + q.lbl + '</span>' +
+      '<span class="q-num">MC ' + (qi + 1) + ' / 4</span>';
+    scr.appendChild(hdr);
+
+    // Question text
+    const txt = document.createElement('p');
+    txt.className = 'q-txt';
+    txt.textContent = q.text;
+    scr.appendChild(txt);
+
+    // Options
+    const oc = document.createElement('div');
+    oc.className = 'opts';
+    oc.id = 'oc' + qi;
+
+    q.opts.forEach(function(o) {
+      const div = document.createElement('div');
+      div.className = 'opt';
+      div.id = 'op' + qi + o.id;
+
+      const radio = document.createElement('input');
+      radio.type  = 'radio';
+      radio.name  = 'q' + qi;
+      radio.id    = 'r' + qi + o.id;
+      radio.value = o.id;
+
+      const lbl = document.createElement('label');
+      lbl.htmlFor = 'r' + qi + o.id;
+      lbl.textContent = o.id.toUpperCase() + ') ' + o.t;
+
+      div.appendChild(radio);
+      div.appendChild(lbl);
+
+      div.addEventListener('click', (function(cqi, coid) {
+        return function() {
+          if (ans[cqi] !== null) return;
+          const r = document.getElementById('r' + cqi + coid);
+          if (r) r.checked = true;
+          doAnswer(cqi, coid);
+        };
+      })(qi, o.id));
+
+      oc.appendChild(div);
+    });
+    scr.appendChild(oc);
+
+    // Feedback placeholder
+    const fb = document.createElement('div');
+    fb.id = 'fb' + qi;
+    fb.style.display = 'none';
+    scr.appendChild(fb);
+
+    // Detonador placeholder
+    const dt = document.createElement('div');
+    dt.id = 'dt' + qi;
+    dt.style.display = 'none';
+    scr.appendChild(dt);
+  });
+}
+
+// ═══════════════════════════════════════════
+// ANSWER LOGIC
+// ═══════════════════════════════════════════
+function doAnswer(qi, oid) {
+  if (ans[qi] !== null) return;
+  if (qi < 0 || qi >= QD.length) return;
+  if (['a','b','c','d'].indexOf(oid) < 0) return;
+
+  const q = QD[qi];
+  const isOk = (oid === q.correct);
+  ans[qi] = oid;
+  if (isOk && qi < 4) { score++; confetti(); } else if (isOk) { confetti(); }
+
+  // Hide options, show selected summary
+  const oc = document.getElementById('oc' + qi);
+  if (oc) { oc.style.display = 'none'; }
+
+  const selectedOpt = q.opts.find(function(o){ return o.id === oid; });
+  const sum = document.createElement('div');
+  sum.className = 'sel-sum';
+  sum.innerHTML =
+    '<span class="sel-sum-lbl">Tu elección</span>' +
+    oid.toUpperCase() + ') ' + (selectedOpt ? selectedOpt.t : '');
+
+  const fb = document.getElementById('fb' + qi);
+  if (fb && fb.parentNode) fb.parentNode.insertBefore(sum, fb);
+
+  // Feedback
+  if (fb) {
+    fb.style.display = 'block';
+    fb.className = 'fb ' + (isOk ? 'fb-ok' : 'fb-bad');
+    fb.innerHTML =
+      '<span class="fb-tag ' + (isOk ? 'ft-ok' : 'ft-bad') + '">' +
+        (isOk ? '✓ Correcto' : '✗ No es la respuesta del modelo') +
+      '</span>' +
+      '<p style="font-size:13px;color:var(--mu);margin-top:4px;line-height:1.7">' +
+        (isOk ? q.ok : q.no) + '</p>';
+  }
+
+  // Detonador
+  const dt = document.getElementById('dt' + qi);
+  if (dt) {
+    dt.style.display = 'block';
+    dt.className = 'det';
+    dt.innerHTML =
+      '<div class="det-t">🟣 Para el plenario</div>' +
+      '<div class="det-q">' + q.det + '</div>';
+  }
+
+  // Enable next
+  updateUI();
+
+  // Last MC → show results after delay
+  if (ans.every(function(a){ return a !== null; })) {
+    setTimeout(buildResults, 700);
+  }
+}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function goTo(n) {
+  for (var i = 0; i < TOTAL; i++) {
+    var el = document.getElementById('s' + i);
+    if (el) el.classList.remove('on');
+  }
+  var next = document.getElementById('s' + n);
+  if (next) { next.classList.add('on'); next.scrollTop = 0; }
+  cur = n;
+  updateUI();
+}
+
+function goNext() {
+  // MC screens: only advance if answered
+  if (MC_SCREENS.indexOf(cur) >= 0) {
+    var qi = MC_QI[cur];
+    if (ans[qi] === null) return;
+  }
+  if (cur < FINAL) goTo(cur + 1);
+}
+
+function goBack() {
+  if (cur > 0) goTo(cur - 1);
+}
+
+// ═══════════════════════════════════════════
+// UPDATE UI
+// ═══════════════════════════════════════════
+function updateUI() {
+  var btnN = document.getElementById('btn-next');
+  var btnB = document.getElementById('btn-back');
+
+  btnB.style.display = cur > 0 ? 'block' : 'none';
+  document.getElementById('tbf').style.width = Math.round((cur / (TOTAL - 1)) * 100) + '%';
+
+  var labels = [
+    'Instrucciones', 'Contexto',
+    'Escenario 1 — Reflexión', 'Escenario 1 — Modelo', 'Escenario 1 — Consolidación',
+    'Escenario 2 — Reflexión', 'Escenario 2 — Modelo', 'Escenario 2 — Consolidación',
+    'Escenario 3 — Reflexión', 'Escenario 3 — Modelo', 'Escenario 3 — Consolidación',
+    'Escenario 4 — Reflexión', 'Escenario 4 — Modelo', 'Escenario 4 — Consolidación',
+    'Pregunta integradora', 'Resultados'
+  ];
+  document.getElementById('tbl').textContent = labels[cur] || '';
+
+  if (cur === FINAL) {
+    btnN.style.display = 'none';
+  } else {
+    btnN.style.display = '';
+  }
+
+  if (cur === 0) {
+    btnN.textContent = 'Comenzar →'; btnN.disabled = false;
+  } else if (cur === 2 || cur === 5 || cur === 8 || cur === 11) {
+    btnN.textContent = 'Ver respuesta del modelo →'; btnN.disabled = false;
+  } else if (cur === 3 || cur === 6 || cur === 9 || cur === 12) {
+    btnN.textContent = 'Responder pregunta →'; btnN.disabled = false;
+  } else if (MC_SCREENS.indexOf(cur) >= 0) {
+    var qi = MC_QI[cur];
+    var isLast = (cur === 14);
+    btnN.textContent = isLast ? 'Ver resultados →' : 'Siguiente escenario →';
+    btnN.disabled = (ans[qi] === null);
+  } else {
+    btnN.textContent = 'Siguiente →'; btnN.disabled = false;
+  }
+}
+
+// ═══════════════════════════════════════════
+// RESULTS
+// ═══════════════════════════════════════════
+function buildResults() {
+  goTo(FINAL);
+
+  // ── Bloque integradora (Q3, index 3) ──
+  var intAns = ans[4];
+  var intQ   = QD[3];
+  var intTop  = document.getElementById('int-top');
+  var intVal  = document.getElementById('int-val');
+  var intBody = document.getElementById('int-body');
+  if (intAns !== null) {
+    var intOk = (intAns === intQ.correct);
+    if (intTop) intTop.style.background = intOk ? 'var(--gbg)' : 'var(--rbg)';
+    if (intTop) intTop.style.borderBottomColor = intOk ? 'var(--gbd)' : 'var(--rbd)';
+    if (intVal) {
+      intVal.textContent = intOk ? '✓ Correcto — Atención paralela' : '✗ No es la respuesta del modelo';
+      intVal.style.color = intOk ? 'var(--gr)' : 'var(--rd)';
+    }
+    if (intBody) intBody.textContent = intOk ? intQ.ok : intQ.no;
+  }
+
+  // ── Bloque escenarios (Q0-Q2, score /3) ──
+  var pct = score / 4 * 100;
+  document.getElementById('sc').textContent = score + '/4';
+  var lv  = document.getElementById('rl');
+  var msg = document.getElementById('rm');
+  if (pct === 100) {
+    lv.className = 'rl lv0'; lv.textContent = '🏆 Dominio excepcional del modelo';
+    msg.textContent = 'Identificaste con precisión los tres antídotos VUCA de los escenarios. Estás listo para defender y cuestionar el modelo en el plenario.';
+    confetti(); setTimeout(confetti, 700);
+  } else if (pct >= 67) {
+    lv.className = 'rl lv1'; lv.textContent = '🎯 Sólida comprensión del modelo';
+    msg.textContent = 'Demostraste buena comprensión del modelo VUCA. El feedback de tu respuesta alternativa es el mejor argumento para llevar al plenario.';
+  } else if (pct >= 33) {
+    lv.className = 'rl lv2'; lv.textContent = '📘 En construcción';
+    msg.textContent = 'Vas consolidando el modelo. Las preguntas donde el modelo no coincidió con tu elección son oportunidades valiosas para el debate grupal.';
+  } else {
+    lv.className = 'rl lv3'; lv.textContent = '💪 Punto de partida';
+    msg.textContent = 'Lee los feedbacks con atención y lleva tus dudas al plenario. Las mejores discusiones nacen de respuestas distintas al modelo.';
+  }
+}
+
+// ═══════════════════════════════════════════
+// RESET
+// ═══════════════════════════════════════════
+function resetAll() {
+  score = 0;
+  for (var i = 0; i < ans.length; i++) ans[i] = null;
+
+  // Reset textareas
+  ['ta1','ta2','ta3','ta4'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
+  // Rebuild MC screens (clears all state including summaries and feedback)
+  buildMC();
+
+  goTo(0);
+}
+
+// ═══════════════════════════════════════════
+// CONFETTI
+// ═══════════════════════════════════════════
+function confetti() {
+  var c = document.getElementById('cc');
+  var cols = ['#c97a00','#e8a000','#1556b8','#1a7a3c','#6b3bbf'];
+  for (var i = 0; i < 40; i++) {
+    var p = document.createElement('div');
+    p.className = 'cp';
+    p.style.cssText =
+      'left:' + (Math.random()*100) + '%;' +
+      'background:' + cols[Math.floor(Math.random()*cols.length)] + ';' +
+      'width:' + (4+Math.random()*7) + 'px;' +
+      'height:' + (4+Math.random()*7) + 'px;' +
+      'border-radius:' + (Math.random()>.5?'50%':'2px') + ';' +
+      'animation-delay:' + (Math.random()*.4) + 's;' +
+      'animation-duration:' + (2+Math.random()*2) + 's;';
+    c.appendChild(p);
+    setTimeout(function(){ p.remove(); }, 4500);
+  }
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+(function(){
+  buildMC();
+  document.getElementById('btn-back').addEventListener('click', goBack);
+  document.getElementById('btn-next').addEventListener('click', goNext);
+  document.getElementById('btn-retry').addEventListener('click', resetAll);
+  updateUI();
+})();
+</script>
+</body>
+</html>
