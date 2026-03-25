@@ -73,6 +73,7 @@ html,body { height:100%; font-family:var(--fn); background:var(--bg); color:var(
 .nca { background:var(--abg); color:var(--ac); border:1px solid var(--abd); }
 .ncb { background:var(--bbg); color:var(--bl); border:1px solid var(--bbd); }
 .ncg { background:var(--gbg); color:var(--gr); border:1px solid var(--gbd); }
+.ncd { background:var(--pbg); color:var(--pu); border:1px solid var(--pbd); }
 
 /* blocks */
 .blk { border-radius:8px; padding:11px 13px; font-size:14px; line-height:1.65; border-left:3px solid; }
@@ -314,7 +315,7 @@ h2 { font-size:17px; font-weight:700; }
   <!-- ══ S11: ESC 4 PREGUNTA ABIERTA ══ -->
   <div class="scr" id="s11">
     <div style="display:flex;align-items:center;gap:10px">
-      <div class="nc" style="background:var(--pbg);color:var(--pu);border:1px solid var(--pbd);">4</div>
+      <div class="nc ncd">4</div>
       <h2>La señal que nadie entiende</h2>
     </div>
     <div class="blk blk-a"><span class="blk-lbl">El Hecho</span>El Ministerio de Transportes acaba de publicar un comunicado anunciando "nuevas regulaciones para plataformas digitales de reparto". El texto es tan general que nadie en la empresa sabe si aplica a Fast-Delivery, si entrará en vigor esta semana o en seis meses, ni qué cambios operativos exigiría.</div>
@@ -329,7 +330,7 @@ h2 { font-size:17px; font-weight:700; }
   <!-- ══ S12: ESC 4 MODELO ══ -->
   <div class="scr" id="s12">
     <div style="display:flex;align-items:center;gap:10px">
-      <div class="nc" style="background:var(--pbg);color:var(--pu);border:1px solid var(--pbd);">4</div>
+      <div class="nc ncd">4</div>
       <h2>La señal que nadie entiende</h2>
     </div>
     <div class="rev">
@@ -402,8 +403,8 @@ const QD = [
       { id:'d', t:'Aceptar que las multas son inevitables y reservar capital para absorberlas.' }
     ],
     correct: 'c',
-    ok: 'El Entendimiento es el antídoto de la Incertidumbre. Ante la falta de información confiable, el primer paso es reducir la niebla: expertos legales, gremios, clarificaciones oficiales. Actuar sin datos puede generar costos irreversibles. La incertidumbre no se resuelve actuando rápido — se resuelve buscando información dirigida antes de comprometer recursos.',
-    no: 'El modelo señala (c): ante la falta de información, primero se busca. Cambiar contratos en 24 horas sin analizar (a) puede quebrar la empresa innecesariamente. Comunicar sin fundamento (b) genera falsas expectativas. Aceptar multas sin investigar (d) es rendirse antes de luchar. El Entendimiento reduce la niebla y permite decisiones informadas.',
+    ok: 'El Entendimiento es el antídoto de la Incertidumbre. Ante la falta de información confiable, el primer paso es reducir la niebla: expertos legales, gremios, clarificaciones oficiales. Actuar sin datos puede generar costos irreversibles. La incertidumbre no se resuelve actuando rápido — se resuelve buscando información dirigida antes de comprometer recursos. Solo con ese mapa claro es posible decidir si adaptar el modelo, negociar plazos o impugnar la norma.',
+    no: 'El modelo señala (c): ante la falta de información, primero se busca. Cambiar contratos en 24 horas sin analizar (a) puede quebrar la empresa innecesariamente. Comunicar sin fundamento (b) genera falsas expectativas. Aceptar multas sin investigar (d) es rendirse antes de luchar. El Entendimiento reduce la niebla y permite decisiones informadas: cada opción requiere datos distintos, y obtenerlos es la primera tarea del gerente.',
     det: '¿Hasta cuándo puede el gerente buscar información antes de que la demora misma se convierta en un riesgo mayor que la ley?'
   },
   // Q1 — after Escenario 2 (Volatilidad)
@@ -418,7 +419,7 @@ const QD = [
     ],
     correct: 'b',
     ok: 'La Visión es el antídoto de la Volatilidad. Cuando el entorno cambia de forma repentina, el riesgo es reaccionar con pánico. La Visión lo evita: el gerente reafirma en qué es única la empresa — pedidos pesados, frágiles, edificios altos — y comunica con claridad por qué esa propuesta sigue siendo valiosa aunque los drones costen menos. La diferenciación, no el precio, es la ventaja sostenible.',
-    no: 'El modelo señala (b): la Visión da dirección estable ante el cambio repentino. Liquidar activos (a) es una reacción de pánico que destruye valor. Copiar drones (c) es inviable a corto plazo y abandona la ventaja competitiva. Esperar sin actuar (d) acumula incertidumbre y permite que los clientes se vayan. ¿Cómo defenderías tu elección en el plenario?',
+    no: 'El modelo señala (b): la Visión da dirección estable ante el cambio repentino. Liquidar activos (a) es una reacción de pánico que destruye valor sin resolver el problema de fondo. Copiar drones (c) es inviable a corto plazo y abandona la ventaja competitiva construida. Esperar sin actuar (d) acumula incertidumbre y permite que los clientes se vayan. La Visión no niega la amenaza — la encuadra desde la propuesta de valor propia.',
     det: '¿Cómo se comunica una Visión a clientes que ya evalúan al competidor sin que suene a evasión de la crisis?'
   },
   // Q2 — after Escenario 3 (Complejidad)
@@ -433,7 +434,7 @@ const QD = [
     ],
     correct: 'a',
     ok: 'La Agilidad es el antídoto de la Complejidad. Cuando múltiples variables interconectadas generan daño en cascada, el costo de demorar supera al costo de una solución imperfecta. Activar rutas alternativas y compensaciones inmediatas detiene la hemorragia de clientes aunque no resuelva el fallo técnico de fondo. La Agilidad no reemplaza al análisis técnico: lo posterga al momento en que la crisis esté controlada.',
-    no: 'El modelo señala (a): la Agilidad prioriza la acción inmediata cuando el daño se acumula por minuto. Esperar el análisis técnico completo (b) deja 340 reclamos sin respuesta mientras el rating cae. Prometer solución en 24h (c) genera expectativas sin acción concreta ahora. Escalar y esperar autorización (d) añade demora cuando el gerente de operaciones ya puede actuar.',
+    no: 'El modelo señala (a): la Agilidad prioriza la acción inmediata cuando el daño se acumula por minuto. Esperar el análisis técnico completo (b) deja 340 reclamos sin respuesta mientras el rating sigue cayendo. Prometer solución en 24h (c) genera expectativas sin acción concreta en el momento más crítico. Escalar y esperar autorización (d) añade demora innecesaria cuando el gerente de operaciones ya tiene capacidad para activar el plan.',
     det: '¿En qué momento el gerente debe dejar de ser ágil y empezar a analizar el fallo de fondo? ¿Qué señal concreta lo indicaría?'
   },
   // Q3 — after Escenario 4 (Ambigüedad)
@@ -703,7 +704,7 @@ function buildResults() {
 
   // ── Bloque integradora (Q3, index 3) ──
   var intAns = ans[4];
-  var intQ   = QD[3];
+  var intQ   = QD[4];
   var intTop  = document.getElementById('int-top');
   var intVal  = document.getElementById('int-val');
   var intBody = document.getElementById('int-body');
